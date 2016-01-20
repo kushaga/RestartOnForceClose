@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.akosha.sample1.restartonforceclose">
 
+
     <application
         android:name=".Application"
         android:allowBackup="true"
@@ -25,7 +26,17 @@
                 <action android:name=".action.RESPONSE" />
             </intent-filter>
         </receiver>
-        <service android:name=".MyIntentService"  />
+
+        <service android:name=".MyIntentService" />
+
+        <service android:name=".StickyService"></service>
+
+        <receiver android:name=".RestartServiceReceiver">
+            <intent-filter>
+                <action android:name="YouWillNeverKillMe"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

@@ -63,12 +63,18 @@ public class MyIntentService extends Service {
         Log.d("intent_service", "Background thread started");
 
         // Sticky means service will continue running until explicitly stopped
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        startService(new Intent(getApplicationContext(), MyIntentService.class));
     }
 }

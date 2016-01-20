@@ -11,11 +11,18 @@ import android.content.SharedPreferences;
  */
 public class Application extends android.app.Application {
 
+    private static Application instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        restartOnForceClose();
+//        restartOnForceClose();
+        instance = this;
+        stickyStart();
+    }
+
+    public static Application getInstance() {
+        return instance;
     }
 
     private void restartOnForceClose() {
@@ -31,15 +38,23 @@ public class Application extends android.app.Application {
             Intent intent = new Intent(this, MyIntentService.class);
 
             PendingIntent onRestartPenIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + 10000, 10000, onRestartPenIntent);
+            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 10000, onRestartPenIntent);
 
             sharedPreferences.edit().putBoolean("AlarmSet", true);
         }
 
 //        PendingIntent onRestartPenIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-
     }
 
+    private void stickyStart() {
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, RestartServiceReceiver.class);
+
+        PendingIntent onRestartPenIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarm.set(AlarmManager.RTC, 5000, onRestartPenIntent);
+    }
 
 }
